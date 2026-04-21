@@ -4,7 +4,7 @@ An internal web-based workflow tool built for Innovation Growth Hub (IGHub) to a
 
 This project provides a fully visual workflow to upload certificate assets, visually map where dynamic data (e.g. names, dates, courses) should be placed, and batch export the final high-resolution certificates as PDFs.
 
-## ✨ Features
+## Features
 
 - **Asset Management**: Drag-and-drop zones for uploading your high-res certificate template (`.png` / `.jpg`) and custom brand typography (`.ttf` / `.otf`).
 - **Interactive Layout Designer**:
@@ -14,7 +14,7 @@ This project provides a fully visual workflow to upload certificate assets, visu
   - **Relative Scaling Logic**: Automatically calculates the coordinate difference between your screen size and the original dimensions to guarantee precise PDF placements.
 - **Bulk Export System**: (UI configured) Upload a CSV of student data, process the coordinate logic with `pdf-lib`, and output 50+ certificates in seconds.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Framework**: [Next.js](https://nextjs.org/) (App Router) / React 19
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
@@ -22,7 +22,7 @@ This project provides a fully visual workflow to upload certificate assets, visu
 - **Data Parsing**: [PapaParse](https://www.papaparse.com/)
 - **Drag & Drop UI**: [react-dropzone](https://react-dropzone.js.org/)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 Make sure you have Node.js 18.x or later installed on your system. 
@@ -42,7 +42,7 @@ npm run dev
 ```
 Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📐 Usage Workflow
+## Usage Workflow
 
 1. Move to the **Project Assets** sidebar and upload your `.png` Certificate and native `.ttf` brand font.
 2. In the **Styling Controls**, set the text's colour, choose a sensible font size, and provide a dummy name (e.g., *John Doe*).
@@ -52,4 +52,4 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-*Built by IGHub*
+*Built by IGlabs*
