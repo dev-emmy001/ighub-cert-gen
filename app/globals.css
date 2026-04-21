@@ -21,6 +21,18 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-indigo: var(--color-indigo);
+  --color-brand-indigo-dark: var(--color-indigo-dark);
+  --color-brand-indigo-light: var(--color-indigo-light);
+  --color-brand-purple: var(--color-purple);
+  --color-brand-cyan: var(--color-cyan);
+  --color-brand-orange: var(--color-orange);
+  --color-brand-green: var(--color-green);
+  --color-brand-gray-900: var(--color-gray-900);
+  --color-brand-gray-700: var(--color-gray-700);
+  --color-brand-gray-500: var(--color-gray-500);
+  --color-brand-gray-300: var(--color-gray-300);
+  --color-brand-gray-100: var(--color-gray-100);
   --font-sans: var(--font-body);
   --font-mono: var(--font-code);
 }

@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.className} h-full antialiased`}
+      className={`${montserrat.className} h-full antialiased tracking-tighter`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
