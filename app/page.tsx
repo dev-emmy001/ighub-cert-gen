@@ -15,7 +15,7 @@ export default function CertGenerator() {
   const [imageBuffer, setImageBuffer] = useState<ArrayBuffer | null>(null); // For PDF Logic
   const [fontBuffer, setFontBuffer] = useState<ArrayBuffer | null>(null);
   const [fontName, setFontName] = useState<string>('');
-  
+
   const [studentNames, setStudentNames] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -82,7 +82,7 @@ export default function CertGenerator() {
       for (const name of studentNames) {
         const pdfDoc = await PDFDocument.create();
         pdfDoc.registerFontkit(fontkit);
-        
+
         let pdfImage;
         if (isPng) {
           pdfImage = await pdfDoc.embedPng(imageBytes);
@@ -92,7 +92,7 @@ export default function CertGenerator() {
 
         const customFont = await pdfDoc.embedFont(fontBuffer);
         const page = pdfDoc.addPage([pdfImage.width, pdfImage.height]);
-        
+
         page.drawImage(pdfImage, {
           x: 0, y: 0,
           width: pdfImage.width,
@@ -141,21 +141,26 @@ export default function CertGenerator() {
   };
 
   return (
-    <main className="min-h-screen bg-brand-background p-4 md:p-8">
+    <main className="h-screen p-4 md:p-8 flex flex-col overflow-hidden">
       {/* Header Section */}
-      <header className="w-full mx-auto mb-8 flex justify-between items-end">
-        <div className="space-y-2">
-          <Image src="/igcolouredlogo.png" alt="Logo" width={100} height={100} />
-          <Typography variant="h1">Certificate Automator</Typography>
-          <Typography variant="p">Upload assets, map coordinates, and batch export.</Typography>
+      <header className="mb-6 flex flex-shrink-0 items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center bg-white p-2 rounded-xl">
+            <Image src="/igcolouredlogo.png" alt="IGHub Logo" width={80} height={40} className="object-contain" />
+          </div>
+          <div>
+            <Typography variant="h2">Certificate Automator</Typography>
+            <Typography variant="p" className="text-brand-gray-500 text-sm">Design and batch-generate certificates instantly.</Typography>
+          </div>
         </div>
-        <Button variant="outline">View Documentation</Button>
       </header>
 
-      {/* Main App Grid */}
-      <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <section className="lg:col-span-3 space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand-gray-100">
+      {/* Main Workspace */}
+      <div className="flex flex-col lg:flex-row gap-8 w-full max-w-[1600px] mx-auto flex-1 min-h-0 overflow-hidden">
+
+        {/* Left Toolkit Sidebar - Scrollable */}
+        <section className="w-full lg:w-[400px] xl:w-[450px] shrink-0 flex flex-col gap-6 overflow-y-auto pr-2 pb-8">
+          <div className="bg-white p-6 rounded-2xl border border-brand-gray-300">
             <Typography variant="h2" className="mb-4 text-sm">1. Project Assets</Typography>
             <div className="space-y-3">
               <AssetDropzone
@@ -194,38 +199,38 @@ export default function CertGenerator() {
             </div>
           </div>
 
-          <DataImport 
+          <DataImport
             onDataLoaded={setStudentNames}
             count={studentNames.length}
           />
-          
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand-gray-100">
+
+          <div className="bg-white p-6 rounded-2xl  border border-brand-gray-300">
             <Typography variant="h2" className="mb-4 text-sm">3. Export</Typography>
-            <Button 
-                className="w-full" 
-                variant="primary"
-                disabled={studentNames.length === 0 || !imageBuffer || !fontBuffer || pdfCoords.x === 0 || isGenerating}
-                onClick={handleGenerate}
+            <Button
+              className="w-full"
+              variant="primary"
+              disabled={studentNames.length === 0 || !imageBuffer || !fontBuffer || pdfCoords.x === 0 || isGenerating}
+              onClick={handleGenerate}
             >
               {isGenerating ? `Generating ${studentNames.length}...` : 'Generate Certificates'}
             </Button>
-            
+
             <div className="mt-4 text-xs text-brand-gray-500 space-y-1 bg-brand-background p-3 rounded border border-brand-gray-100">
-               <div className="font-semibold text-[10px] uppercase mb-2">Checklist to Generate:</div>
-               <div className="flex items-center gap-2">{imageBuffer ? '✅' : '⬜'} Template Uploaded</div>
-               <div className="flex items-center gap-2">{fontBuffer ? '✅' : '⬜'} Font Uploaded</div>
-               <div className="flex items-center gap-2">{pdfCoords.x > 0 ? '✅' : '⬜'} Canvas Position Mapped</div>
-               <div className="flex items-center gap-2">{studentNames.length > 0 ? `✅ ${studentNames.length} Names Loaded` : '⬜ CSV Names Loaded'}</div>
+              <div className="font-semibold text-[10px] uppercase mb-2">Checklist to Generate:</div>
+              <div className="flex items-center gap-2">{imageBuffer ? '✅' : '⬜'} Template Uploaded</div>
+              <div className="flex items-center gap-2">{fontBuffer ? '✅' : '⬜'} Font Uploaded</div>
+              <div className="flex items-center gap-2">{pdfCoords.x > 0 ? '✅' : '⬜'} Canvas Position Mapped</div>
+              <div className="flex items-center gap-2">{studentNames.length > 0 ? `✅ ${studentNames.length} Names Loaded` : '⬜ CSV Names Loaded'}</div>
             </div>
           </div>
         </section>
 
-        {/* Center: Preview Canvas */}
-        <section className="lg:col-span-9 flex flex-col">
+        {/* Right Canvas Area - Fixed */}
+        <section className="w-full lg:flex-1 flex flex-col min-h-0">
           <div className="flex justify-between items-center mb-4 px-2">
-            <Typography variant="h2" className="text-sm uppercase tracking-widest text-brand-gray-500">
+            {/* <Typography variant="h2" className="text-sm uppercase tracking-widest text-brand-gray-500">
               Layout Designer
-            </Typography>
+            </Typography> */}
 
             <div className="flex gap-4">
               <div className="bg-white px-3 py-1 rounded border border-brand-gray-100 text-[10px] text-brand-gray-500 font-mono">
@@ -236,7 +241,7 @@ export default function CertGenerator() {
               </div>
             </div>
           </div>
-          <div className="flex-1 bg-white rounded-2xl shadow-lg border border-brand-gray-100 p-6 flex flex-col items-center justify-center min-h-[600px] overflow-auto">
+          <div className="flex-1 bg-white rounded-2xl border border-brand-gray-300 p-6 flex flex-col items-center justify-center overflow-auto h-full">
             <PreviewCanvas
               image={baseImage}
               fontName={fontName}

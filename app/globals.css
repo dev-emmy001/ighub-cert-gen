@@ -38,7 +38,7 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--color-white);
 }
 
 * {

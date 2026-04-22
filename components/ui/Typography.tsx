@@ -7,7 +7,7 @@ interface TypographyProps {
 export const Typography = ({ children, variant = 'p', className = '' }: TypographyProps) => {
     const styles = {
         h1: 'text-4xl font-bold tracking-tight text-brand-gray-900 md:text-5xl',
-        h2: 'text-xl font-semibold text-brand-gray-700 tracking-wide',
+        h2: 'text-xl font-semibold text-brand-gray-700 tracking-tight',
         p: 'text-base text-brand-gray-500 leading-relaxed',
         label: 'text-xs font-bold uppercase tracking-widest text-brand-indigo',
     };

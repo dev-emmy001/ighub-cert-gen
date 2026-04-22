@@ -6,7 +6,7 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
     const [isDragging, setIsDragging] = useState(false);
 
     return (
-        <div className="relative group overflow-hidden rounded-xl bg-brand-background border border-brand-gray-100 shadow-inner w-full h-full flex flex-col items-center justify-center p-8">
+        <div className="relative group overflow-hidden rounded-xl bg-brand-background border border-brand-gray-100 w-full h-full flex flex-col items-center justify-center p-8">
             {image ? (
                 <div className="relative cursor-crosshair inline-block shadow-xl select-none">
                     <img
@@ -16,21 +16,21 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                         className="max-w-full h-auto object-contain pointer-events-none"
                         style={{ maxHeight: '75vh' }}
                     />
-                    <div 
-                        className="absolute inset-0 z-10" 
+                    <div
+                        className="absolute inset-0 z-10"
                         onClick={(e) => {
                             if (!onMap) return;
                             const rect = e.currentTarget.getBoundingClientRect();
-                            
+
                             const screenX = e.clientX - rect.left;
                             const screenY = e.clientY - rect.top;
-                            
+
                             const img = e.currentTarget.previousElementSibling as HTMLImageElement;
                             const widthRatio = img.naturalWidth / rect.width;
                             const heightRatio = img.naturalHeight / rect.height;
-                            
+
                             onMap(screenX, screenY, widthRatio, heightRatio);
-                            
+
                             // Focus input after placing
                             setTimeout(() => inputRef.current?.focus(), 50);
                         }}
@@ -42,7 +42,7 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                             style={{ left: coords.x, top: coords.y, transform: 'translate(0%, -50%)' }}
                         >
                             <div className="flex gap-1 items-end opacity-0 group-hover/drag:opacity-100 transition-opacity select-none">
-                                <div 
+                                <div
                                     className="bg-brand-cyan text-white text-[10px] px-2 py-0.5 rounded-t cursor-move"
                                     onPointerDown={(e) => {
                                         e.preventDefault();
@@ -69,7 +69,7 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                                 >
                                     ✥ Drag
                                 </div>
-                                <button 
+                                <button
                                     className="bg-red-500 hover:bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded-t cursor-pointer"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -85,7 +85,7 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                                 type="text"
                                 value={sampleText}
                                 onChange={(e) => setSampleText?.(e.target.value)}
-                                style={{ 
+                                style={{
                                     fontFamily: fontName || 'auto',
                                     color: textColor,
                                     // Scale the font size relative to screen size so it visually matches what it will be on the PDF
