@@ -4,13 +4,20 @@ import { Typography } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { AssetDropzone } from '@/components/ui/AssetDropzone';
 import { PreviewCanvas } from '@/components/PreviewCanvas';
+import { DataImport } from '@/components/ui/DataImport';
 import Image from 'next/image';
+import { PDFDocument, rgb } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+import JSZip from 'jszip';
 
 export default function CertGenerator() {
   const [baseImage, setBaseImage] = useState<string | null>(null); // For Preview
   const [imageBuffer, setImageBuffer] = useState<ArrayBuffer | null>(null); // For PDF Logic
   const [fontBuffer, setFontBuffer] = useState<ArrayBuffer | null>(null);
   const [fontName, setFontName] = useState<string>('');
+  
+  const [studentNames, setStudentNames] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const [coords, setCoords] = useState({ x: 0, y: 0 }); // Screen position
   const [pdfCoords, setPdfCoords] = useState({ x: 0, y: 0 }); // Real PDF position
@@ -53,6 +60,84 @@ export default function CertGenerator() {
   const handleClearPosition = () => {
     setCoords({ x: 0, y: 0 });
     setPdfCoords({ x: 0, y: 0 });
+  };
+
+  const hexToRgb = (hex: string) => {
+    const cleanHex = hex.replace('#', '');
+    const r = parseInt(cleanHex.substring(0, 2), 16) / 255;
+    const g = parseInt(cleanHex.substring(2, 4), 16) / 255;
+    const b = parseInt(cleanHex.substring(4, 6), 16) / 255;
+    return rgb(r, g, b);
+  };
+
+  const handleGenerate = async () => {
+    if (!imageBuffer || !fontBuffer || studentNames.length === 0 || pdfCoords.x === 0) return;
+    setIsGenerating(true);
+
+    try {
+      const zip = new JSZip();
+      const imageBytes = new Uint8Array(imageBuffer);
+      const isPng = imageBytes[0] === 0x89 && imageBytes[1] === 0x50;
+
+      for (const name of studentNames) {
+        const pdfDoc = await PDFDocument.create();
+        pdfDoc.registerFontkit(fontkit);
+        
+        let pdfImage;
+        if (isPng) {
+          pdfImage = await pdfDoc.embedPng(imageBytes);
+        } else {
+          pdfImage = await pdfDoc.embedJpg(imageBytes);
+        }
+
+        const customFont = await pdfDoc.embedFont(fontBuffer);
+        const page = pdfDoc.addPage([pdfImage.width, pdfImage.height]);
+        
+        page.drawImage(pdfImage, {
+          x: 0, y: 0,
+          width: pdfImage.width,
+          height: pdfImage.height,
+        });
+
+        const actualX = pdfCoords.x;
+        const actualY = pdfImage.height - pdfCoords.y;
+
+        // Title Case capitalization logic
+        const formattedName = name
+          .split(' ')
+          .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '')
+          .join(' ');
+
+        const startX = actualX; // Start from left precisely where clicked
+
+        page.drawText(formattedName, {
+          x: startX,
+          y: actualY,
+          size: fontSize,
+          font: customFont,
+          color: hexToRgb(textColor),
+        });
+
+        const pdfBytes = await pdfDoc.save();
+        zip.file(`${name.replace(/[^a-zA-Z0-9 ]/g, '')}_Certificate.pdf`, pdfBytes);
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'IGHub_Certificates.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error(error);
+      alert('Error generating certificates. See console.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -109,11 +194,28 @@ export default function CertGenerator() {
             </div>
           </div>
 
+          <DataImport 
+            onDataLoaded={setStudentNames}
+            count={studentNames.length}
+          />
+          
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand-gray-100">
-            <Typography variant="h2" className="mb-4 text-sm">2. Data & Export</Typography>
-            <Button className="w-full mb-4" variant="outline">Upload CSV</Button>
-            <div className="mt-8 pt-6 border-t border-brand-gray-100">
-              <Button className="w-full" variant="primary">Generate (50 per batch)</Button>
+            <Typography variant="h2" className="mb-4 text-sm">3. Export</Typography>
+            <Button 
+                className="w-full" 
+                variant="primary"
+                disabled={studentNames.length === 0 || !imageBuffer || !fontBuffer || pdfCoords.x === 0 || isGenerating}
+                onClick={handleGenerate}
+            >
+              {isGenerating ? `Generating ${studentNames.length}...` : 'Generate Certificates'}
+            </Button>
+            
+            <div className="mt-4 text-xs text-brand-gray-500 space-y-1 bg-brand-background p-3 rounded border border-brand-gray-100">
+               <div className="font-semibold text-[10px] uppercase mb-2">Checklist to Generate:</div>
+               <div className="flex items-center gap-2">{imageBuffer ? '✅' : '⬜'} Template Uploaded</div>
+               <div className="flex items-center gap-2">{fontBuffer ? '✅' : '⬜'} Font Uploaded</div>
+               <div className="flex items-center gap-2">{pdfCoords.x > 0 ? '✅' : '⬜'} Canvas Position Mapped</div>
+               <div className="flex items-center gap-2">{studentNames.length > 0 ? `✅ ${studentNames.length} Names Loaded` : '⬜ CSV Names Loaded'}</div>
             </div>
           </div>
         </section>

@@ -38,8 +38,8 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                     {/* Visual Marker for Name */}
                     {coords.x > 0 && coords.y > 0 && (
                         <div
-                            className="absolute flex flex-col items-center justify-center pointer-events-auto z-20 group/drag"
-                            style={{ left: coords.x, top: coords.y, transform: 'translate(-50%, -50%)' }}
+                            className="absolute flex flex-col items-start justify-center pointer-events-auto z-20 group/drag"
+                            style={{ left: coords.x, top: coords.y, transform: 'translate(0%, -50%)' }}
                         >
                             <div className="flex gap-1 items-end opacity-0 group-hover/drag:opacity-100 transition-opacity select-none">
                                 <div 
@@ -93,7 +93,7 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                                     background: 'transparent',
                                     border: '1px dashed rgba(41, 171, 226, 0.5)',
                                     outline: 'none',
-                                    textAlign: 'center',
+                                    textAlign: 'left',
                                     pointerEvents: isDragging ? 'none' : 'auto'
                                 }}
                                 className="whitespace-nowrap transition-colors focus:border-brand-cyan hover:border-brand-cyan hover:bg-white/40 focus:bg-white/40 rounded px-2 min-w-10 placeholder:text-brand-gray-300"
