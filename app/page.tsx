@@ -99,14 +99,16 @@ export default function CertGenerator() {
           height: pdfImage.height,
         });
 
-        const actualX = pdfCoords.x;
-        const actualY = pdfImage.height - pdfCoords.y;
-
-        // Title Case capitalization logic
         const formattedName = name
           .split(' ')
           .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '')
           .join(' ');
+
+        const actualX = pdfCoords.x;
+        // Adjust for baseline vs vertical center offset. 
+        // Screen uses translate(0%, -50%) centering the text vertically at the click Y.
+        // PDF drawText y positions the BASELINE.
+        const actualY = (pdfImage.height - pdfCoords.y) - (fontSize * 0.35);
 
         const startX = actualX; // Start from left precisely where clicked
 
@@ -146,7 +148,7 @@ export default function CertGenerator() {
       <header className="mb-6 flex flex-shrink-0 items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center bg-white p-2 rounded-xl">
-            <Image src="/igcolouredlogo.png" alt="IGHub Logo" width={80} height={40} className="object-contain" />
+            <Image src="/igcolouredlogo.png" alt="IGHub Logo" width={150} height={75} className="object-contain" />
           </div>
           <div>
             <Typography variant="h2">Certificate Automator</Typography>

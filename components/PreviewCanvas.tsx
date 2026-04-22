@@ -85,18 +85,18 @@ export const PreviewCanvas = ({ image, fontName, coords, scaleRatio, onMap, onCl
                                 type="text"
                                 value={sampleText}
                                 onChange={(e) => setSampleText?.(e.target.value)}
-                                style={{
+                                style={{ 
                                     fontFamily: fontName || 'auto',
                                     color: textColor,
                                     // Scale the font size relative to screen size so it visually matches what it will be on the PDF
                                     fontSize: `${fontSize / (scaleRatio || 1)}px`,
                                     background: 'transparent',
-                                    border: '1px dashed rgba(41, 171, 226, 0.5)',
+                                    border: '1px dashed transparent',
                                     outline: 'none',
                                     textAlign: 'left',
                                     pointerEvents: isDragging ? 'none' : 'auto'
                                 }}
-                                className="whitespace-nowrap transition-colors focus:border-brand-cyan hover:border-brand-cyan hover:bg-white/40 focus:bg-white/40 rounded px-2 min-w-10 placeholder:text-brand-gray-300"
+                                className="whitespace-nowrap transition-colors focus:border-brand-cyan hover:border-brand-cyan hover:bg-white/40 focus:bg-white/40 rounded px-0 placeholder:text-brand-gray-300"
                                 placeholder="Type text..."
                             />
                         </div>
