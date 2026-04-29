@@ -10,6 +10,18 @@ import { PDFDocument, rgb } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import JSZip from 'jszip';
 
+const CheckIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+);
+
+const PendingIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+    <circle cx="12" cy="12" r="10"></circle>
+  </svg>
+);
+
 export default function CertGenerator() {
   const [baseImage, setBaseImage] = useState<string | null>(null); // For Preview
   const [imageBuffer, setImageBuffer] = useState<ArrayBuffer | null>(null); // For PDF Logic
@@ -136,7 +148,7 @@ export default function CertGenerator() {
 
     } catch (error) {
       console.error(error);
-      alert('Error generating certificates. See console.');
+      alert('Error generating certificates. Check the browser console for details!');
     } finally {
       setIsGenerating(false);
     }
@@ -153,6 +165,31 @@ export default function CertGenerator() {
           <div>
             <Typography variant="h2">Certificate Automator</Typography>
             <Typography variant="p" className="text-brand-gray-500 text-sm">Design and batch-generate certificates instantly.</Typography>
+          </div>
+        </div>
+
+        {/* Requirements Checklist */}
+        <div className="hidden lg:flex items-center gap-4 bg-white p-3 px-5 rounded-xl border border-brand-gray-200 shadow-sm">
+          <div className="flex items-center gap-2">
+            {imageBuffer ? <CheckIcon /> : <PendingIcon />}
+            <span className="text-xs font-medium text-brand-gray-600">Template</span>
+          </div>
+          <div className="w-px h-4 bg-brand-gray-200"></div>
+          <div className="flex items-center gap-2">
+            {fontBuffer ? <CheckIcon /> : <PendingIcon />}
+            <span className="text-xs font-medium text-brand-gray-600">Font</span>
+          </div>
+          <div className="w-px h-4 bg-brand-gray-200"></div>
+          <div className="flex items-center gap-2">
+            {pdfCoords.x > 0 ? <CheckIcon /> : <PendingIcon />}
+            <span className="text-xs font-medium text-brand-gray-600">Position</span>
+          </div>
+          <div className="w-px h-4 bg-brand-gray-200"></div>
+          <div className="flex items-center gap-2">
+            {studentNames.length > 0 ? <CheckIcon /> : <PendingIcon />}
+            <span className="text-xs font-medium text-brand-gray-600">
+              Data {studentNames.length > 0 && `(${studentNames.length})`}
+            </span>
           </div>
         </div>
       </header>
@@ -217,13 +254,7 @@ export default function CertGenerator() {
               {isGenerating ? `Generating ${studentNames.length}...` : 'Generate Certificates'}
             </Button>
 
-            <div className="mt-4 text-xs text-brand-gray-500 space-y-1 bg-brand-background p-3 rounded border border-brand-gray-100">
-              <div className="font-semibold text-[10px] uppercase mb-2">Checklist to Generate:</div>
-              <div className="flex items-center gap-2">{imageBuffer ? '✅' : '⬜'} Template Uploaded</div>
-              <div className="flex items-center gap-2">{fontBuffer ? '✅' : '⬜'} Font Uploaded</div>
-              <div className="flex items-center gap-2">{pdfCoords.x > 0 ? '✅' : '⬜'} Canvas Position Mapped</div>
-              <div className="flex items-center gap-2">{studentNames.length > 0 ? `✅ ${studentNames.length} Names Loaded` : '⬜ CSV Names Loaded'}</div>
-            </div>
+
           </div>
         </section>
 
